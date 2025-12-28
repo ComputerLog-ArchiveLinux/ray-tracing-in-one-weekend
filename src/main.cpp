@@ -17,6 +17,7 @@ int main() {
 
     // Export image
     img.export_ppm("../gen/img.ppm");
+    img.export_png("../gen/img.png");
 
     return 0;
 }

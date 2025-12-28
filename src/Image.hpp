@@ -3,6 +3,8 @@
 
 #include <vec3.hpp>
 
+#include <stb_image_write.h>
+
 #include <cstdint>
 #include <cstdio>
 #include <string>
@@ -58,6 +60,29 @@ public:
 
         // Log
         printf("Generated PPM image at ./%s\n", filepath.c_str());
+
+        return true;
+    }
+
+    // Export to PNG
+    bool export_png(std::string filepath) {
+        // Get image in correct memory format
+        std::vector<uint8_t> raw_img_data = std::vector<uint8_t>(3*width*height);
+        for (int i = 0; i < buffer.size(); i++) {
+            raw_img_data[3*i    ] = 255.0f * buffer[i][0];
+            raw_img_data[3*i + 1] = 255.0f * buffer[i][1];
+            raw_img_data[3*i + 2] = 255.0f * buffer[i][2];
+        }
+
+        // Write image
+        int err = stbi_write_png(filepath.c_str(), width, height, 3, &raw_img_data[0], 3*width);
+        if (err == 0) {
+            fprintf(stderr, "[STB] Error writing PNG image to file ./%s\n", filepath);
+            return false;
+        }
+
+        // Log
+        printf("Generated PNG image at ./%s\n", filepath.c_str());
 
         return true;
     }
