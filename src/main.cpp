@@ -1,6 +1,7 @@
 #include <vec3.hpp>
 #include <Image.hpp>
 #include <Camera.hpp>
+#include <PathTracer.hpp>
 
 #include <cmath>
 
@@ -17,18 +18,8 @@ int main() {
     camera.setup();
 
     // Generate image
-    Image img = Image(camera.spatial_sample_rate[0], camera.spatial_sample_rate[1]);
-    for (int y = 0; y < img.height; y++) {
-        for (int x = 0; x < img.width; x++) {
-            // Generate rays
-            Ray ray = camera.gen_ray(x, y);
-
-            // Generate pixel color
-            float t = vec3::normalise(ray.direction)[1];
-            t = 0.5f * (t + 1.0f);
-            img[x + y*img.width] = (1.0f-t)*vec3(1.0f, 1.0f, 1.0f) + t*vec3(0.5f, 0.7f, 1.0f);
-        }
-    }
+    PathTracer pathtracer;
+    Image img = pathtracer.render(camera);
 
     // Export image
     img.export_ppm("../gen/img.ppm");
